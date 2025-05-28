@@ -11,25 +11,21 @@ class Tree
   def build_tree
     sorted_array = @array.sort.uniq
     n = sorted_array.length
-    return nil if n.zero?
-
-    # Initialize a queue w/root node as middle of initial array
+    nil if n.zero?
     mid = (n - 1) / 2
-    p sorted_array
-    p mid
 
+    # Set The middle element of the array as root.
     @root = Node.new(sorted_array[mid])
-    p @root
-    sorted_array.delete_at(mid)
-    p sorted_array
-    # iterate over the full sorted_array with each
-    # set a current_node and previous_node
-    # initial value is @root for both since you start at the top
-    # keep iterating unless value of current node is nil
-    # take value from array, if greater than root go right_child
-    #                      , if less than root go left_child
-    # create a new node for the item if you reach the end of the tree
-    #        or if value < previous_node and value > current_node
-    # tree is build once all items are iterated and converted to nodes
+
+    # Recursively do the same for the left half and right half.
+    left_half = sorted_array[0..mid - 1]
+    right_half = sorted_array[mid + 1..n - 1]
+
+    # Get the middle of the left half and make it the left child of the root created in step 1.
+    # Get the middle of the right half and make it the right child of the root created in step 1.
+    # Print the preorder of the tree.
+  end
+
+  def divide_array(array)
   end
 end

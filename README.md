@@ -10,3 +10,28 @@ Algorithm to build from
 4 - If right subtree exists, that is, if end is greater than middle index. Then create the right node with the value equal to middle of range [middle+1, end]. Link the root node and right node and push the right node along range into the queue.
 
 5 - Return the root node.
+
+Ex array
+[1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
+
+sorted array = [1,3,4,5,7,8,9,23,67,324,6345] - length 11
+root = (11-1)/2 = 5th item = 8
+left_array = [1,3,4,5,7]
+    root = 4
+    left_array = [1,3]                          4
+        left_array = [1]                       3  7
+        right_array = [3]                     1    5
+    right_array = [5,7]
+        left_array = [5]
+        right_array = [7]
+
+
+
+right_array = [9,23,67,324,6345]
+        root = 67                               67
+        left_array = [9,23]                   23  6345
+            left_array = [9]                 9      324
+            right_array = [23]
+        right_array = [324,6345]
+            left_array = [324]
+            right_array = [6345]
