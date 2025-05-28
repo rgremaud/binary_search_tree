@@ -17,7 +17,7 @@ Ex array
 sorted array = [1,3,4,5,7,8,9,23,67,324,6345] - length 11
 root = (11-1)/2 = 5th item = 8
 left_array = [1,3,4,5,7]
-    root = 4
+    root = 4                                                                                
     left_array = [1,3]                          4
         left_array = [1]                       3  7
         right_array = [3]                     1    5

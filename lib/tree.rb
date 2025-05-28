@@ -1,8 +1,7 @@
+# frozen_string_literal: true
+
+# Tree class to build a binary search tree provided an array.
 class Tree
-  # Build a Tree class which accepts an array when initialized.
-  # The Tree class should have a root attribute, which uses the return value of #build_tree which you’ll write next.
-  #
-  # Psuedocode
   def initialize(array)
     @array = array
     @root = nil
@@ -11,21 +10,50 @@ class Tree
   def build_tree
     sorted_array = @array.sort.uniq
     n = sorted_array.length
-    nil if n.zero?
     mid = (n - 1) / 2
 
-    # Set The middle element of the array as root.
-    @root = Node.new(sorted_array[mid])
+    @root = Node.new(sorted_array[mid]) if @root.nil?
 
-    # Recursively do the same for the left half and right half.
     left_half = sorted_array[0..mid - 1]
     right_half = sorted_array[mid + 1..n - 1]
 
-    # Get the middle of the left half and make it the left child of the root created in step 1.
-    # Get the middle of the right half and make it the right child of the root created in step 1.
-    # Print the preorder of the tree.
+    current_node = @root
+    array_split(left_half, current_node)
+    array_split(right_half, current_node)
+    p @root
   end
 
-  def divide_array(array)
+  def array_split(array, node)
+    n = array.length
+    return nil if n <= 1
+
+    if n == 2
+      mid = 1
+      mid_value = array[1]
+    else
+      mid = (n - 1) / 2 # mid = (2-1)/2 = 0
+      mid_value = array[mid]
+    end
+    current_node = node # current_node = 4
+    if mid_value > current_node.value
+      current_node.right_child = Node.new(mid_value)
+      current_node = current_node.right_child
+    else
+      current_node.left_child = Node.new(mid_value)
+      current_node = current_node.left_child
+    end
+
+    left_half = array[0..mid - 1]
+    right_half = array[mid + 1..n - 1]
+    array_split(left_half, current_node)
+    array_split(right_half, current_node)
+  end
+
+  def print_left_values
+    current_node = @root
+    p current_node.value
+    p current_node.left_child.value
+    p current_node.left_child.right_child.value
+    p current_node.left_child.left_child.left_child
   end
 end
