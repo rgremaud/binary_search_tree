@@ -58,30 +58,76 @@ class Tree
     array_split(right_half, current_node)
   end
 
-  def print_left_values
+  def print_values
     current_node = @root
     p current_node.value
     p current_node.right_child.value
-    p current_node.right_child.left_child.value
-    p current_node.right_child.left_child.left_child.value
+    p current_node.right_child.right_child.value
+    p current_node.right_child.right_child.left_child.value
+    p current_node.right_child.right_child.left_child.right_child.value
   end
 
   def insert(value)
     return puts 'That value exists already' if @array.include?(value)
 
-    current_node = @root
-    while current_node.left_value.nil? || current_node.right_value.nil?
-      if @root.nil?
-        @root = Node.new(value)
-      elsif value > current_node.value
-        current_node = current_node.right_value
-      elsif value < current_node.value
-        current_node = current_node.left_value
+    if @root.nil?
+      @root = Node.new(value)
+    else
+      current_node = @root
+      previous_node = @root
+      until current_node.nil?
+        previous_node = current_node
+        current_node = if value > current_node.value
+                         current_node.right_child
+                       else
+                         current_node.left_child
+                       end
+      end
+      if value < previous_node.value
+        previous_node.left_child = Node.new(value)
+      else
+        previous_node.right_child = Node.new(value)
       end
     end
   end
 
   def delete(value)
-    p 'DELETE THAT SUMBITCH'
+    puts 'That value does not exist' if @array.include?(value) == false
+    current_node = @root
+    previous_node = @root
+
+    until current_node.value == value
+      previous_node = current_node
+      current_node = if value < current_node.value
+                       current_node.left_child
+                     else
+                       current_node.right_child
+                     end
+    end
+
+    p previous_node.right_child.value
+    # deleting a leaf - no impact to structure to tree
+    if current_node.left_child.nil? && current_node.right_child.nil? && current_node.value < previous_node.value
+      previous_node.left_child = nil
+    elsif current_node.left_child.nil? && current_node.right_child.nil? && current_node.value > previous_node.value
+      previous_node.right_child = nil
+    # deleting a node with 1 child - point parent to the removed nodes child
+    elsif current_node.left_child.nil? && !current_node.right_child.nil?
+      previous_node.right_child = current_node.right_child
+    elsif !current_node.left_child.nil? && current_node.right_child.nil?
+      previous_node.left_child = current_node.left_child
+      # deleting a node with 2 children - find the next biggest item (ie, next largest item in right subtree)
+    elsif !current_node.left_child.nil? && !current_node.right_child.nil?
+      #   this involves going to right_child 1x and then iterating left until you can't move further.
+      current_node = current_node.right_child
+      current_node = current_node.left_child until current_node.left_child.left_child.nil?
+      current_node.left_child = if current_node.left_child.value > previous_node.value
+                                  previous_node.right_child
+                                else
+                                  previous_node.left_child
+                                end
+      current_node.left_child = nil
+    end
+    p previous_node.right_child.value
   end
 end

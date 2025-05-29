@@ -48,3 +48,16 @@ insert(500)
         1      5   9     324
                            \
                             500
+
+    Example removing 67 - current_node = 67
+                            previous_node = 8
+      current_node = current_node.right_child current_node = 6345
+      current_node = current_node.left_child until current_node.left_child.left_child.nil?
+      current_node.left_child = if current_node.left_child.value > previous_node.value
+                                  previous_node.right_child
+                                else
+                                  previous_node.left_child
+                                end
+      current_node.left_child = nil
+    end
+    p previous_node.right_child.value
