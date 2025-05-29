@@ -28,10 +28,23 @@ left_array = [1,3,4,5,7]
 
 
 right_array = [9,23,67,324,6345]
-        root = 67                               67
-        left_array = [9,23]                   23  6345
-            left_array = [9]                 9      324
+        root = 67                                 67
+        left_array = [9,23]                   23    6345
+            left_array = [9]                 9     324
             right_array = [23]
         right_array = [324,6345]
             left_array = [324]
             right_array = [6345]
+
+[1,3,4,5,7,8,9,23,67,324,6345]
+root = 8
+insert(500)
+                  8
+               /      \
+              4       67
+             / \     /    \
+            3   7   23    6345
+          /    /    /     /
+        1      5   9     324
+                           \
+                            500

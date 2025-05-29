@@ -20,21 +20,30 @@ class Tree
     current_node = @root
     array_split(left_half, current_node)
     array_split(right_half, current_node)
-    p @root
   end
 
   def array_split(array, node)
     n = array.length
-    return nil if n <= 1
+    current_node = node
+    if n == 1
+      mid_value = array[0]
+      if mid_value > current_node.value
+        current_node.right_child = Node.new(mid_value)
+      else
+        current_node.left_child = Node.new(mid_value)
+      end
+      return
+    end
+    return nil if n.zero?
 
     if n == 2
       mid = 1
       mid_value = array[1]
     else
-      mid = (n - 1) / 2 # mid = (2-1)/2 = 0
+      mid = (n - 1) / 2
       mid_value = array[mid]
     end
-    current_node = node # current_node = 4
+
     if mid_value > current_node.value
       current_node.right_child = Node.new(mid_value)
       current_node = current_node.right_child
@@ -52,8 +61,27 @@ class Tree
   def print_left_values
     current_node = @root
     p current_node.value
-    p current_node.left_child.value
-    p current_node.left_child.right_child.value
-    p current_node.left_child.left_child.left_child
+    p current_node.right_child.value
+    p current_node.right_child.left_child.value
+    p current_node.right_child.left_child.left_child.value
+  end
+
+  def insert(value)
+    return puts 'That value exists already' if @array.include?(value)
+
+    current_node = @root
+    while current_node.left_value.nil? || current_node.right_value.nil?
+      if @root.nil?
+        @root = Node.new(value)
+      elsif value > current_node.value
+        current_node = current_node.right_value
+      elsif value < current_node.value
+        current_node = current_node.left_value
+      end
+    end
+  end
+
+  def delete(value)
+    p 'DELETE THAT SUMBITCH'
   end
 end
