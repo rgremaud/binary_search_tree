@@ -91,7 +91,7 @@ class Tree
     end
   end
 
-  def delete(value)
+  def delete(value) # rewrite so each scenario calls a method for that options
     puts 'That value does not exist' if @array.include?(value) == false
     current_node = @root
     previous_node = @root
@@ -106,28 +106,43 @@ class Tree
     end
 
     p previous_node.right_child.value
-    # deleting a leaf - no impact to structure to tree
     if current_node.left_child.nil? && current_node.right_child.nil? && current_node.value < previous_node.value
       previous_node.left_child = nil
     elsif current_node.left_child.nil? && current_node.right_child.nil? && current_node.value > previous_node.value
       previous_node.right_child = nil
-    # deleting a node with 1 child - point parent to the removed nodes child
     elsif current_node.left_child.nil? && !current_node.right_child.nil?
       previous_node.right_child = current_node.right_child
     elsif !current_node.left_child.nil? && current_node.right_child.nil?
       previous_node.left_child = current_node.left_child
-      # deleting a node with 2 children - find the next biggest item (ie, next largest item in right subtree)
     elsif !current_node.left_child.nil? && !current_node.right_child.nil?
-      #   this involves going to right_child 1x and then iterating left until you can't move further.
+      # find the next larger number from deleted node
       current_node = current_node.right_child
-      current_node = current_node.left_child until current_node.left_child.left_child.nil?
-      current_node.left_child = if current_node.left_child.value > previous_node.value
-                                  previous_node.right_child
-                                else
-                                  previous_node.left_child
-                                end
-      current_node.left_child = nil
+      # iterate to the right until you reach the furthest left item
+      until current_node.left_child.nil?
+        current_node = current_node.left_child
+        p "End result is #{current_node.value}"
+      end
+
     end
     p previous_node.right_child.value
+  end
+
+  def find(value)
+    current_node = @root
+    until current_node.nil?
+      if value == current_node.value
+        return puts current_node
+      elsif value < current_node.value
+        current_node = current_node.left_child
+      else
+        current_node = current_node.right_child
+      end
+    end
+  end
+
+  def pretty_print(node = @root, prefix = '', is_left = true)
+    pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
+    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
+    pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
   end
 end
