@@ -91,7 +91,7 @@ class Tree
     end
   end
 
-  def delete(value) # rewrite so each scenario calls a method for that options
+  def delete(value)
     puts 'That value does not exist' if @array.include?(value) == false
     current_node = @root
     previous_node = @root
@@ -105,26 +105,72 @@ class Tree
                      end
     end
 
-    p previous_node.right_child.value
-    if current_node.left_child.nil? && current_node.right_child.nil? && current_node.value < previous_node.value
-      previous_node.left_child = nil
-    elsif current_node.left_child.nil? && current_node.right_child.nil? && current_node.value > previous_node.value
-      previous_node.right_child = nil
-    elsif current_node.left_child.nil? && !current_node.right_child.nil?
-      previous_node.right_child = current_node.right_child
-    elsif !current_node.left_child.nil? && current_node.right_child.nil?
-      previous_node.left_child = current_node.left_child
-    elsif !current_node.left_child.nil? && !current_node.right_child.nil?
-      # find the next larger number from deleted node
-      current_node = current_node.right_child
-      # iterate to the right until you reach the furthest left item
-      until current_node.left_child.nil?
-        current_node = current_node.left_child
-        p "End result is #{current_node.value}"
-      end
-
+    if current_node.left_child.nil? && current_node.right_child.nil?
+      delete_leaf(current_node, previous_node)
+    elsif current_node.left_child.nil? || current_node.right_child.nil?
+      delete_one_child(current_node, previous_node)
+    else
+      delete_two_children(current_node, previous_node)
     end
-    p previous_node.right_child.value
+  end
+
+  def delete_leaf(current_node, previous_node)
+    if current_node.value < previous_node.value
+      previous_node.left_child = nil
+    else
+      previous_node.right_child = nil
+    end
+  end
+
+  def delete_one_child(current_node, previous_node)
+    if current_node == previous_node.left_child
+      previous_node.left_child = if !current_node.left_child.nil?
+                                   current_node.left_child
+                                 else
+                                   current_node.right_child
+                                 end
+    else
+      previous_node.right_child = if !current_node.left_child.nil?
+                                    current_node.left_child
+                                  else
+                                    current_node.right_child
+                                  end
+    end
+  end
+
+  def delete_two_children(current_node, previous_node)
+    p replacement_node = find_replacement(current_node)
+    replacement_node.left_child = current_node.left_child
+    replacement_node.right_child = current_node.right_child
+    if current_node == previous_node.left_child
+      previous_node.left_child = replacement_node
+    else
+      previous_node.right_child = replacement_node
+    end
+  end
+
+  def find_replacement(current_node) # doesn't work for root
+    current_node = current_node.right_child
+    current_node = current_node.left_child until current_node.left_child.left_child.nil?
+    replacement_node = current_node.left_child
+    current_node.left_child = nil
+    replacement_node
+  end
+
+  def find_parent(value)
+    return nil if @array.include?(value) == false
+
+    current_node = @root
+    previous_node = nil
+    until current_node.value == value
+      previous_node = current_node
+      current_node = if value > current_node.value
+                       current_node.right_child
+                     else
+                       current_node.left_child
+                     end
+    end
+    p previous_node.value
   end
 
   def find(value)
@@ -138,6 +184,11 @@ class Tree
         current_node = current_node.right_child
       end
     end
+  end
+
+  def level_order
+    # block_given? ? yield(node) : result << node.data
+    # result unless block_given?
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
