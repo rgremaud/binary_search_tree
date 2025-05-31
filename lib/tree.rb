@@ -58,15 +58,6 @@ class Tree
     array_split(right_half, current_node)
   end
 
-  def print_values
-    current_node = @root
-    p current_node.value
-    p current_node.right.value
-    p current_node.right.right.value
-    p current_node.right.right.left.value
-    p current_node.right.right.left.right.value
-  end
-
   def insert(value)
     return puts 'That value exists already' if @array.include?(value)
 
@@ -93,32 +84,24 @@ class Tree
 
   def delete(value)
     puts 'That value does not exist' if @array.include?(value) == false
-    current_node = @root
-    previous_node = @root
 
-    until current_node.value == value
-      previous_node = current_node
-      current_node = if value < current_node.value
-                       current_node.left
-                     else
-                       current_node.right
-                     end
-    end
+    current_node = find(value)
+    parent_node = find_parent(current_node)
 
     if current_node.left.nil? && current_node.right.nil?
-      delete_leaf(current_node, previous_node)
+      delete_leaf(current_node, parent_node)
     elsif current_node.left.nil? || current_node.right.nil?
-      delete_one_child(current_node, previous_node)
+      delete_one_child(current_node, parent_node)
     else
       delete_two_children(current_node)
     end
   end
 
-  def delete_leaf(current_node, previous_node)
-    if current_node.value < previous_node.value
-      previous_node.left = nil
+  def delete_leaf(current_node, parent_node)
+    if current_node.value < parent_node.value
+      parent_node.left = nil
     else
-      previous_node.right = nil
+      parent_node.right = nil
     end
   end
 
@@ -154,7 +137,7 @@ class Tree
   end
 
   def find_parent(node)
-    return nil if @array.include?(node.value) == false
+    return nil if find(node.value) == false
 
     current_node = @root
     previous_node = nil
@@ -166,14 +149,14 @@ class Tree
                        current_node.left
                      end
     end
-    p previous_node
+    previous_node
   end
 
   def find(value)
     current_node = @root
     until current_node.nil?
       if value == current_node.value
-        return puts current_node
+        return current_node
       elsif value < current_node.value
         current_node = current_node.left
       else
@@ -189,16 +172,15 @@ class Tree
     # block_given? ? yield(node) : result << node.data
     # result unless block_given?
     # Enqueue the root node.
-    queue_array << current_node
-    # until queue_array.empty?
-    values_array << queue_array[0].value
-    queue_array << queue_array[0].left unless queue_array[0].left.nil?
-    queue_array << queue_array[0].right unless queue_array[0].right.nil?
-    queue_array.drop(1)
-
-    queue_array.drop(1)
-    queue_array.drop(1)
+    p queue_array << current_node
     p queue_array.length
+    # until queue_array.empty?
+    p values_array << queue_array[0].value
+    queue_array << queue_array[0].left
+    queue_array << queue_array[0].right
+    queue_array.shift(1)
+    p queue_array.length
+
     # Visit the node by adding its value to the value_array,
     # and then adding its left and right child (if exist) to the queue
     # continue to visit the first node in queue, add it to values_array, add its children, remove
