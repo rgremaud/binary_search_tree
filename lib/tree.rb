@@ -165,29 +165,35 @@ class Tree
     end
   end
 
-  def level_order # does not work
-    values_array = []
-    queue_array = []
-    current_node = @root
-    # block_given? ? yield(node) : result << node.data
-    # result unless block_given?
-    # Enqueue the root node.
-    p queue_array << current_node
-    p queue_array.length
-    # until queue_array.empty?
-    p values_array << queue_array[0].value
-    queue_array << queue_array[0].left
-    queue_array << queue_array[0].right
-    queue_array.shift(1)
-    p queue_array.length
+  def level_order
+    values = []
+    queue = [@root]
+    until queue.empty?
+      block_given? ? yield(queue[0]) : values << queue[0].value
+      queue << queue[0].left unless queue[0].left.nil?
+      queue << queue[0].right unless queue[0].right.nil?
+      queue.shift(1)
+    end
+    values unless block_given?
+  end
 
-    # Visit the node by adding its value to the value_array,
-    # and then adding its left and right child (if exist) to the queue
-    # continue to visit the first node in queue, add it to values_array, add its children, remove
-    # While the queue is not empty then dequeue the node and visit it.
-    # Enqueue its the left child(if its exists)
-    # Enqueue its the right child(if its exists)
-    # Repeat the steps 2-4 until the queue is empty
+  def inorder
+    # smallest to largest
+    # visit left -> root -> right subtree
+  end
+
+  def preorder(node = @root, values = [])
+    return if node.nil?
+
+    values << node.value
+    preorder(node.left, values)
+    preorder(node.right, values)
+    values
+  end
+
+  def postorder
+    # bottom to top from left to right
+    # visit left -> right -> root
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
