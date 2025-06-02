@@ -177,23 +177,60 @@ class Tree
     values unless block_given?
   end
 
-  def inorder
-    # smallest to largest
-    # visit left -> root -> right subtree
-  end
-
-  def preorder(node = @root, values = [])
+  def inorder(node = @root, values = [], &block)
     return if node.nil?
 
+    yield node if block_given?
+    inorder(node.left, values)
+    values << node.value
+    inorder(node.right, values)
+    values unless block_given?
+  end
+
+  def preorder(node = @root, values = [], &block)
+    return if node.nil?
+
+    yield node if block_given?
     values << node.value
     preorder(node.left, values)
     preorder(node.right, values)
-    values
+    values unless block_given?
   end
 
-  def postorder
-    # bottom to top from left to right
-    # visit left -> right -> root
+  def postorder(node = @root, values = [], &block)
+    return if node.nil?
+
+    yield node if block_given?
+    postorder(node.left, values)
+    postorder(node.right, values)
+    values << node.value
+    values unless block_given?
+  end
+
+  def find_value(value) # doesn't work -
+    preorder { |node| return node if node == value }
+  end
+
+  def height(value)
+    # Write a #height method that accepts a value and returns the height of the node
+    # containing that value. Height is defined as the number of edges in the longest path
+    # from that node to a leaf node. If the value is not found in the tree, the method should return nil.
+    height = 0
+    p current_node = find(value)
+    # if value is not found, return nil
+    # if node is leaf (no children), height is 0
+    # recursively calculate height of left subtree from value
+    # recusrively calculate height of right subtree from value
+  end
+
+  def depth(value, node = @root, depth = -1) # doesnt work
+    return -1 if @root.nil?
+
+    depth += 1
+    return depth if node.value == value
+
+    depth(value, node.left, depth)
+    depth(value, node.right, depth)
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
